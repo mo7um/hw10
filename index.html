@@ -4,9 +4,25 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
-  <title>Document</title>
+  <title>ДЗ 10</title>
 </head>
 <body>
+  <h1>Fake Store</h1>
+
+  <div id="popUpMessage"></div>
+
+  <form id="addProductForm">
+    <h2>Add new Product</h2>
+    <input class="productInput" type="text" id="productTitle" placeholder="Title" required>
+    <input class="productInput" type="number" id="productPrice" placeholder="Price" required>
+    <input class="productInput" type="text" id="productCategory" placeholder="Category" required>
+    <input class="productInput" type="text" id="productDescription" placeholder="Description" required>
+    <input class="productInput" type="text" id="productImage" placeholder="Image URL" required>
+    <button type="submit">Add Product</button>
+  </form>
+
+  <h2>Products</h2>
+  <div id="productList"></div>
   <script src="script.js"></script>
 </body>
 </html>
