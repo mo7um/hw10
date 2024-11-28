@@ -40,6 +40,12 @@ async function addProduct(event) {
     image: document.getElementById("productImage").value
   };
 
+  // очиста полей ввода после отправки
+  const inputs = document.querySelectorAll(".productInput");
+  inputs.forEach(input => {
+    input.value = "";
+  });
+
   try {
     const response = await fetch(`${API_URL}/products`, {
       method: "POST",
