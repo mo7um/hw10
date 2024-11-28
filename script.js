@@ -22,11 +22,9 @@ function displayProducts(products) {
       <h3>${product.title}</h3>
       <p>$${product.price}</p>
       <button onclick="deleteProduct(${product.id})">Delete</button>
-    `;
+    `; // при нажатии на кнопку удаления вызывается функция deleteProduct со значением id товара
     productList.appendChild(productElement);
   });
-
-  showMessage("Информация о товарах успешно получена");
 }
 
 async function addProduct(event) {
@@ -42,7 +40,7 @@ async function addProduct(event) {
 
   // очиста полей ввода после отправки
   const inputs = document.querySelectorAll(".productInput");
-  inputs.forEach(input => {
+  inputs.forEach((input) => {
     input.value = "";
   });
 
@@ -54,10 +52,21 @@ async function addProduct(event) {
     });
     if (!response.ok) throw new Error("Network response was not ok"); // Проверяем выполнение запроса, если запрос не выполнен выводим сообщение об ошибке.
     const addedProduct = await response.json();
-    showMessage("Product added successfully");
+    showMessage("Товар успешно добавлен");
     getProducts();
   } catch (error) {
     showMessage("Error adding product: " + error.message, "error");
+  }
+}
+
+async function deleteProduct(id) {
+  try {
+    const response = await fetch(`${API_URL}/products/${id}`, { method: "DELETE" });
+    if (!response.ok) throw new Error("Network response was not ok");
+    showMessage("Товар успешно удален");
+    getProducts();
+  } catch (error) {
+    showMessage("Error deleting product: " + error.message, "error");
   }
 }
 
