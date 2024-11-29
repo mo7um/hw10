@@ -1,10 +1,10 @@
 const API_URL = "https://fakestoreapi.com";
 
-async function getProducts() {
+async function getProducts(category = "") {
   try {
-    const responce = await fetch(`${API_URL}/products`);
-    if (!responce.ok) throw new Error(responce.statusText);
-    const products = await responce.json();
+    const response = await fetch(`${API_URL}/products${category ? `/category/${category}` : ""}`);
+    if (!response.ok) throw new Error(response.statusText);
+    const products = await response.json();
     displayProducts(products);
   } catch (error) {
     console.log(error.message);
@@ -60,8 +60,7 @@ async function addProduct(event) {
 }
 
 async function deleteProduct(id) {
-  try {
-    // Получаем информацию о продукте и удаляем его
+  try { // Получаем информацию о продукте и удаляем его
     const [productResponse, deleteResponse] = await Promise.all([
       fetch(`${API_URL}/products/${id}`),
       fetch(`${API_URL}/products/${id}`, { method: "DELETE" })
@@ -78,6 +77,33 @@ async function deleteProduct(id) {
   }
 }
 
+
+async function getCategories() { // Получение категорий с API
+  try {
+    const response = await fetch(`${API_URL}/products/categories`);
+    if (!response.ok) throw new Error(response.statusText);
+    const categories = await response.json();
+    populateCategoryFilter(categories);
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+function populateCategoryFilter(categories) { // Заполнение фильтра категориями
+  const categoryFilter = document.getElementById("categoryFilter");
+  categories.forEach((category) => {
+    const option = document.createElement("option");
+    option.value = category;
+    option.textContent = category;
+    categoryFilter.appendChild(option);
+  });
+  // Добавление обработчика событий для изменения выбранной категории
+  categoryFilter.addEventListener("change", (event) => {
+    const selectedCategory = event.target.value;
+    getProducts(selectedCategory); // Вывод продуктов с соответствующей категорией
+  });
+}
+
 function showMessage(message, type = "success") {
   const messageElement = document.getElementById("popUpMessage");
   messageElement.textContent = message;
@@ -85,8 +111,10 @@ function showMessage(message, type = "success") {
   messageElement.style.display = "block";
   setTimeout(() => {
     messageElement.style.display = "none";
-  }, 5000);
+  }, 3000);
 }
 
 document.getElementById("addProductForm").addEventListener("submit", addProduct);
+
 getProducts();
+getCategories();
