@@ -1,14 +1,18 @@
 const API_URL = "https://fakestoreapi.com";
 let currentPage = 1; // Текущая страница
 const ProductsPerPage = 6; // Количество товаров на страницу
-let allProducts = []; // Товары загружаются порциями
+let allProducts = [];
+let selectedCategory = "";
 
 async function getProducts(category = "") {
   try {
+    selectedCategory = category; // Сохранение выббранной категории
+
     const response = await fetch(`${API_URL}/products${category ? `/category/${category}` : ""}`);
     if (!response.ok) throw new Error(response.statusText);
     const products = await response.json();
     allProducts = products; // Сохраняем все товары в массив
+    currentPage = 1;
     displayProducts(getPaginatedProducts());
   } catch (error) {
     console.log(error.message);
@@ -85,7 +89,7 @@ async function addProduct(event) {
     if (!response.ok) throw new Error("Network response was not ok"); // Проверяем выполнение запроса, если запрос не выполнен выводим сообщение об ошибке.
     const addedProduct = await response.json();
     showMessage(`Товар "${newProduct.title}" успешно добавлен`);
-    getProducts();
+    getProducts(selectedCategory); // Сохраняем категорию при добавлении товаров
   } catch (error) {
     showMessage("Error adding product: " + error.message, "error");
   }
@@ -103,7 +107,7 @@ async function deleteProduct(id) {
 
     const product = await productResponse.json();
     showMessage(`Товар "${product.title}" успешно удален`);
-    getProducts();
+    getProducts(selectedCategory); // Сохраняем категорию при удалении товаров
   } catch (error) {
     showMessage("Error deleting product: " + error.message, "error");
   }
@@ -123,16 +127,12 @@ async function getCategories() { // Получение категорий с API
 
 function populateCategoryFilter(categories) { // Заполнение фильтра категориями
   const categoryFilter = document.getElementById("categoryFilter");
+
   categories.forEach((category) => {
     const option = document.createElement("option");
     option.value = category;
     option.textContent = category;
     categoryFilter.appendChild(option);
-  });
-  // Добавление обработчика событий для изменения выбранной категории
-  categoryFilter.addEventListener("change", (event) => {
-    const selectedCategory = event.target.value;
-    getProducts(selectedCategory); // Вывод продуктов с соответствующей категорией
   });
 }
 
@@ -148,6 +148,10 @@ function showMessage(message, type = "success") {
 
 document.getElementById("addProductForm").addEventListener("submit", addProduct);
 document.getElementById("loadMore").addEventListener("click", loadMoreProducts);
+document.getElementById("categoryFilter").addEventListener("change", (event) => {
+  const selectedCategory = event.target.value;
+  getProducts(selectedCategory); // Вывод продуктов с соответствующей категорией
+});
 
 getProducts();
 getCategories();
