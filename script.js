@@ -52,7 +52,7 @@ async function addProduct(event) {
     });
     if (!response.ok) throw new Error("Network response was not ok"); // Проверяем выполнение запроса, если запрос не выполнен выводим сообщение об ошибке.
     const addedProduct = await response.json();
-    showMessage("Товар успешно добавлен");
+    showMessage(`Товар "${newProduct.title}" успешно добавлен`);
     getProducts();
   } catch (error) {
     showMessage("Error adding product: " + error.message, "error");
@@ -61,9 +61,17 @@ async function addProduct(event) {
 
 async function deleteProduct(id) {
   try {
-    const response = await fetch(`${API_URL}/products/${id}`, { method: "DELETE" });
-    if (!response.ok) throw new Error("Network response was not ok");
-    showMessage("Товар успешно удален");
+    // Получаем информацию о продукте и удаляем его
+    const [productResponse, deleteResponse] = await Promise.all([
+      fetch(`${API_URL}/products/${id}`),
+      fetch(`${API_URL}/products/${id}`, { method: "DELETE" })
+    ]);
+    if (!productResponse.ok || !deleteResponse.ok) {
+      throw new Error("Network response was not ok");
+    }
+
+    const product = await productResponse.json();
+    showMessage(`Товар "${product.title}" успешно удален`);
     getProducts();
   } catch (error) {
     showMessage("Error deleting product: " + error.message, "error");
@@ -77,7 +85,7 @@ function showMessage(message, type = "success") {
   messageElement.style.display = "block";
   setTimeout(() => {
     messageElement.style.display = "none";
-  }, 3000);
+  }, 5000);
 }
 
 document.getElementById("addProductForm").addEventListener("submit", addProduct);
