@@ -4,12 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
-  <title>ДЗ 10</title>
+  <title>Fake Store - Hw 10</title>
 </head>
 <body>
   <h1>Fake Store</h1>
-
-  <div id="popUpMessage"></div>
 
   <form id="addProductForm">
     <h2>Add new Product</h2>
@@ -21,8 +19,17 @@
     <button type="submit">Add Product</button>
   </form>
 
+  <h2>Filter by Category</h2>
+  <select id="categoryFilter">
+    <option value="">All Categories</option>
+  </select>
+
+  <div id="popUpMessage"></div>
+
   <h2>Products</h2>
-  <div id="productList"></div>
+  <section id="productList"></section>
+  <button id="loadMore" type="button" style="display: none;">Load more</button>
+  <p id="endMessage" style="display: none;">Все товары загружены</p>
   <script src="script.js"></script>
 </body>
 </html>
